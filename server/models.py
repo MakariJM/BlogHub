@@ -1,6 +1,25 @@
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_migrate import Migrate  # Add this import statement
 from sqlalchemy import MetaData
+from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
+
+from config import db
+
+
+
+
+app = Flask(__name__)
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
+db = SQLAlchemy(app)
+migrate = Migrate(app, db)
+
+metadata = MetaData(naming_convention={
+    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
+})
+
+
 
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
@@ -69,3 +88,5 @@ class Comment(db.Model):
     def __repr__(self):
         return f'<Comment  {self.id}, {self.text}>'
 
+    if __name__ == '__main__':
+        app.run(debug=True)
