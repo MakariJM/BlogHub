@@ -3,6 +3,10 @@ from flask import Flask, request, make_response, session, jsonify
 from flask_migrate import Migrate
 from flask_restful import Api, Resource
 from models import db
+from flask.ext.bcrypt import Bcrypt
+# instantiate Bcrypt with app instance
+bcrypt = Bcrypt(app)
+
 
 import os
 
