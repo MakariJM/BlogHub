@@ -1,7 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate 
-from app import bcrypt
+from extensions import bcrypt
 from sqlalchemy import MetaData
 from sqlalchemy_serializer import SerializerMixin
 from sqlalchemy.ext.associationproxy import association_proxy
@@ -9,13 +9,10 @@ from sqlalchemy.ext.hybrid import hybrid_property
 
 
 
-
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///your_database.db'
 db = SQLAlchemy(app)
 migrate = Migrate(app, db)
-bcrypt = Bcrypt(app)  # Initializing Bcrypt with Flask app
 
 metadata = MetaData(naming_convention={
     "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
@@ -38,7 +35,7 @@ class User(db.Model, SerializerMixin):
 
     posts = db.relationship('Post')
 
-    def _repr_(self):
+    def __repr__(self):
         return f'<User {self.id}, {self.name}>'
     
     @hybrid_property
@@ -68,7 +65,7 @@ class Post(db.Model, SerializerMixin):#to serialize the data
     name = db.Column(db.String)
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-    def _repr_(self):
+    def __repr__(self):
         return f'<Review {self.id}, {self.name}>'
     
    
@@ -84,9 +81,7 @@ class Comment(db.Model, SerializerMixin):
         return f'<Comment  {self.id}, {self.text}>'
 
    
-   
-   
-   
+  
    
     
 class PostComment(db.Model, SerializerMixin):
@@ -103,5 +98,3 @@ class PostComment(db.Model, SerializerMixin):
         return f'<PostComment {self.id}, {self.post_id}, {self.comment_id}>'
 
 
-    if __name__ == '__main__':
-        app.run(debug=True)
